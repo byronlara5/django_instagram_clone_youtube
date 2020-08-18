@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+
+  <div class="columns is-mobile is-centered">
+  <div class="column">
+
+
+      <div class="card">
+  <div class="card-image">
+    <figure class="image is-4by3">
+      <img src="{{ post.picture.url }}" alt="Placeholder image">
+    </figure>
+  </div>
+  <div class="card-content">
+    <div class="media">
+
+      <div class="media-left">
+        <figure class="image is-48x48">
+          {% if post.user.profile.picture %}
+            <img src="{{ post.user.profile.picture.url }}" alt="Placeholder image">
+          {% else %}
+            <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+          {% endif %}
+        </figure>
+      </div>
+
+      <div class="media-content">
+        {% if post.user.profile.first_name %}
+          <p class="title is-4">{{ post.user.profile.first_name }} {{ post.user.profile.last_name }}</p>
+        {% else %}
+          <p class="title is-4">Unknown</p>
+        {% endif %}
+        <p class="subtitle is-6">@{{ post.user.username }}</p>
+
+      {{ post.caption }}
+      <p>{% for tag in post.tags.all %}<a href="{{ tag.get_absolute_url }}">#{{ tag }}</a>{% endfor %}</p>
+      <br>
+      <strong><small>{{ post.posted }}</small></strong>
+      
+
+      </div>
+    
+
+    {% if favorited is True %}
+    <div class="media-right">
+      <a href="{% url 'postfavorite' post.id %}"><i class="material-icons has-text-danger">save_alt</i></a>
+      <p>Remove Post</p> 
+    </div>
+    {% else %}
+
+    <div class="media-right">
+      <a href="{% url 'postfavorite' post.id %}"><i class="material-icons has-text-success">save_alt</i></a>
+      <p>Save Post</p> 
+    </div>
+
+    {% endif %}
+
+    <div class="media-right">
+      <a href="{% url 'postlike' post.id %}"><i class="material-icons has-text-danger">favorite</i></a>
+      <p>{{ post.likes }} Likes</p>  
+    </div>
+    
+
+    </div>
+
+  </div>
+</div>
+
+<div class="card-content">
+
+{% for comment in comments %}
+<article class="media">
+  <figure class="media-left">
+    <p class="image is-64x64">
+      {% if comment.user.profile.picture %}
+        <img src="{{ comment.user.profile.picture.url }}" alt="Placeholder image">
+      {% else %}
+        <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+      {% endif %}
+    </p>
+  </figure>
+
+  <div class="media-content">
+    <div class="content">
+      <p>
+        {% if comment.user.profile.first_name %}
+          <strong>{{ comment.user.profile.first_name }} {{ comment.user.profile.last_name }}</strong><small> @{{ comment.user.username }}</small>
+        {% else %}
+          <strong>Unknown</strong>
+        {% endif %}
+        <br>
+          {{ comment.body }}
+        <br>
+        <strong><small>{{ comment.date|naturaltime }}</small></strong>
+      </p>
+    </div>
+
+</article>
+{% endfor %}
+
+<article class="media">
+  <figure class="media-left">
+    <p class="image is-64x64">
+      {% if request.user.profile.picture %}
+        <img src="{{ request.user.profile.picture.url }}" alt="Placeholder image">
+      {% else %}
+        <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+      {% endif %}
+    </p>
+  </figure>
+  <div class="media-content">
+    <form method="post" action="" role="form">
+      {% csrf_token %}
+    <div class="field">
+      <p class="control">
+        {{ form.body }}
+      </p>
+    </div>
+    <div class="field">
+      <p class="control">
+        <button type="submit" name="action" class="button">Post comment</button>
+      </p>
+    </div>
+    </form>
+  </div>
+</article>
+</div>
+
+
+
+</div>
+</div>
+
+{% endblock %}

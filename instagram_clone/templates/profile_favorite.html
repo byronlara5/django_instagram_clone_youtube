@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+
+        
+{% block content %}
+ 
+  <article class="media">
+    <div class="media-left">
+        <figure class="image is-256x256">
+          {% if profile.picture %}
+          <img class="is-rounded" src="{{ profile.picture.url }}">
+          {% else %}
+          <img class="is-rounded" src="https://bulma.io/images/placeholders/256x256.png">
+          {% endif %}
+        </figure>
+    </div>
+
+     <div class="media-content">
+
+      <div class="content">
+          <h1 class="title is-1">@{{ profile.user }}</h1>
+          <p class="subtitle is-3">{% if profile.first_name %}{{ profile.first_name }} {{ profile.last_name }}{% endif %}</p>
+
+          <div class="media-right">
+                <a class="button is-success">Follow</a>
+          </div>
+
+          <br>
+      </div>
+          <nav class="level">
+            <div class="level-item has-text-centered">
+              <div>
+                <p class="heading">Post</p>
+                <p class="title">{{ posts_count }}</p>
+              </div>
+            </div>
+            <div class="level-item has-text-centered">
+              <div>
+                <p class="heading">Following</p>
+                <p class="title">{{ following_count }}</p>
+              </div>
+            </div>
+            <div class="level-item has-text-centered">
+              <div>
+                <p class="heading">Followers</p>
+                <p class="title">{{ followers_count }}</p>
+              </div>
+            </div>
+          </nav>
+          <p class="subtitle is-5">{% if profile.profile_info %}{{ profile.profile_info }}{% endif %}</p>
+          
+        {% if user.is_authenticated and user == profile.user %}
+          <a class="button is-info">Edit Profile</a>
+        {% endif %}
+
+      </div>
+    </div>
+  </article>
+             
+
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container">
+
+        <div class="tabs is-centered">
+          <ul>
+            <li>
+              <a href="{% url 'profile' profile.user %}">
+                <span class="icon is-small"><i class="fas fa-image" aria-hidden="true"></i></span>
+                <i class="material-icons md-36">dashboard</i>
+                <span>Posts</span>
+              </a>
+            </li>
+            <li class="is-active">
+              <a href="{% url 'profilefavorites' profile.user %}">
+                <span class="icon is-small"><i class="fas fa-music" aria-hidden="true"></i></span>
+                <i class="material-icons md-36">save_alt</i>
+                <span>Saved</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+    
+  </div>
+  </section>
+
+<div class="columns is-multiline is-mobile">
+
+{% for post in posts %}
+  <div class="column is-one-quarter">
+  <div class="box">
+    <figure class="image is-256x256">
+      <a href="{{ post.get_absolute_url }}"><img src="{{ post.picture.url }}"></a>
+    </figure>
+  </div>
+  </div>
+{% endfor %}
+
+  
+
+</div>
+
+{% endblock %}

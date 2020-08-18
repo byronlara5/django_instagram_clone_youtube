@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+      <div class="columns is-mobile is-centered">
+  <div class="column is-half">
+
+{% for post_item in post_items %}
+  <div class="card">
+  <div class="card-image">
+    <figure class="image is-4by3">
+      <a href="{{ post_item.get_absolute_url }}"><img src="{{ post_item.picture.url }}" alt="Placeholder image"></a>
+    </figure>
+  </div>
+  <div class="card-content">
+    <div class="media">
+      <div class="media-left">
+        <figure class="image is-48x48">
+          {% if post_item.user.profile.picture %}
+            <img src="{{ post_item.user.profile.picture.url }}" alt="Placeholder image">
+          {% else %}
+            <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+          {% endif %}
+        </figure>
+      </div>
+      <div class="media-content">
+        {% if post_item.user.profile.first_name %}
+          <a href="{% url 'profile' post_item.user %}"><p class="title is-4">{{ post_item.user.profile.first_name }} {{ post_item.user.profile.last_name }}</p></a>
+        {% else %}
+          <a href="{% url 'profile' post_item.user %}"><p class="title is-4">Unknown</p></a>
+        {% endif %}
+
+        <p class="subtitle is-6">@{{ post_item.user.username }}</p>
+
+      {{ post_item.caption }}
+      <p>{% for tag in post_item.tags.all %}<a href="{{ tag.get_absolute_url }}">#{{ tag }}</a>{% endfor %}</p>
+      <br>
+      <strong><small>{{ post_item.posted | naturaltime }}</small></strong>
+      </div>
+    
+
+    <div class="media-right">
+      <a href="{% url 'postlike' post_item.id %}"><i class="material-icons has-text-danger">favorite</i></a>
+      <p>{{ post_item.likes }} Likes</p>  
+    </div>
+
+</div>
+
+
+
+  </div>
+</div>
+
+<br>
+
+{% endfor %}
+
+</div>
+</div>
+
+{% endblock %}
