@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     'comment',
     'direct',
     'notifications',
+    'stories',
+    'django_celery_beat',
+
 ]
 
 MIDDLEWARE = [
@@ -139,3 +142,6 @@ LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'login'
 LOGIN_URL = '/user/login/'
 
+
+#Celery Broker
+CELERY_BROKER_URL = 'amqp://localhost:5672'

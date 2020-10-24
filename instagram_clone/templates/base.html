@@ -60,9 +60,14 @@
       </a>
 
         <a href="{% url 'newpost' %}" class="navbar-item">
-        <i style="color: green;" class="material-icons">perm_media</i>
-         <strong>New Post</strong>
-      </a>
+          <i style="color: green;" class="material-icons">perm_media</i>
+          <strong>New Post</strong>
+        </a>
+
+        <a href="{% url 'newstory' %}" class="navbar-item">
+          <i style="color: green;" class="material-icons">photo_filter</i>
+          <strong>New Story</strong>
+        </a>
 
       <div class="navbar-item has-dropdown is-hoverable">
         <a class="navbar-link">
@@ -109,4 +114,8 @@
 
 
   </body>
+ 
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="{% static 'js/init.js' %}"></script>
+  <script src="{% static 'js/slider.js' %}"></script>
 </html>

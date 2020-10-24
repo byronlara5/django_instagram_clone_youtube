@@ -36,9 +36,13 @@ class Tag(models.Model):
 			self.slug = slugify(self.title)
 		return super().save(*args, **kwargs)
 
+class PostFileContent(models.Model):
+	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='content_owner')
+	file = models.FileField(upload_to=user_directory_path)
+
 class Post(models.Model):
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-	picture =  models.ImageField(upload_to=user_directory_path, verbose_name='Picture', null=False)
+	content =  models.ManyToManyField(PostFileContent, related_name='contents')
 	caption = models.TextField(max_length=1500, verbose_name='Caption')
 	posted = models.DateTimeField(auto_now_add=True)
 	tags = models.ManyToManyField(Tag, related_name='tags')

@@ -2,8 +2,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 
-from post.models import Stream, Post, Tag, Likes
+from post.models import Stream, Post, Tag, Likes, PostFileContent
 from post.forms import NewPostForm
+from stories.models import Story, StoryStream
 
 from comment.models import Comment
 from comment.forms import CommentForm
@@ -22,6 +23,7 @@ def index(request):
 	user = request.user
 	posts = Stream.objects.filter(user=user)
 
+	stories = StoryStream.objects.filter(user=user)
 
 
 	group_ids = []
@@ -34,7 +36,8 @@ def index(request):
 	template = loader.get_template('index.html')
 
 	context = {
-	'post_items': post_items,
+		'post_items': post_items,
+		'stories': stories,
 
 	}
 
@@ -84,13 +87,14 @@ def PostDetails(request, post_id):
 
 @login_required
 def NewPost(request):
-	user = request.user.id
+	user = request.user
 	tags_objs = []
+	files_objs = []
 
 	if request.method == 'POST':
 		form = NewPostForm(request.POST, request.FILES)
 		if form.is_valid():
-			picture = form.cleaned_data.get('picture')
+			files = request.FILES.getlist('content')
 			caption = form.cleaned_data.get('caption')
 			tags_form = form.cleaned_data.get('tags')
 
@@ -100,8 +104,14 @@ def NewPost(request):
 				t, created = Tag.objects.get_or_create(title=tag)
 				tags_objs.append(t)
 
-			p, created = Post.objects.get_or_create(picture=picture, caption=caption, user_id=user)
+			for file in files:
+				file_instance = PostFileContent(file=file, user=user)
+				file_instance.save()
+				files_objs.append(file_instance)
+
+			p, created = Post.objects.get_or_create(caption=caption, user=user)
 			p.tags.set(tags_objs)
+			p.content.set(files_objs)
 			p.save()
 			return redirect('index')
 	else:
